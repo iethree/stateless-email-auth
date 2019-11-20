@@ -1,0 +1,19 @@
+{
+  "name": "stateless-email-auth",
+  "version": "0.1.0",
+  "description": "stateless email authorization authentication for nodejs web applications",
+  "main": "auth.js",
+  "scripts": {
+    "test": "node ./test/auth.write.test.js && node ./test/auth.test.js"
+  },
+  "author": "RPL",
+  "license": "MIT",
+  "dependencies": {
+    "date-fns": "^2.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.3.1"
+  },
+  "devDependencies": {
+    "logchalk": "^1.0.1"
+  }
+}
