@@ -34,7 +34,7 @@ function config(options){
  */
 function checkConfig(){
    if(configuration.cryptoKey=="default_cryptography_key")
-      console.log("WARNING: Default cryptography key present. Change with config() in production code.")
+      throw new Error("WARNING: Default cryptography key present. Change with config() in production code.")
    else
       key = crypto.scryptSync(configuration.cryptoKey, salt, 24);
    
