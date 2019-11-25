@@ -76,8 +76,10 @@ function withinMinutes(time, min){
 
    if( expiration >= now && time <= now) //if expiration is after now, and the time is in the past
       return true;
-   else
+   else{
+      console.log('token too old');
       return false;
+   }
 }
 
 /**
@@ -85,14 +87,14 @@ function withinMinutes(time, min){
  * @param {string} email 
  * @returns {string} encrypted token with the user's email and current time
  */
-function generateToken(email){
+function generateToken(email, level){
    if(!(email.includes('@') && email.includes ('.'))) //check if we have an email address
       return false;
    checkConfig();
    
    const iv = crypto.randomBytes(16).toString('base64').slice(0,16);
    const cipher = crypto.createCipheriv(algorithm, key, iv);
-   let toEncrypt = JSON.stringify({email: email, time: new Date()});
+   let toEncrypt = JSON.stringify({email: email, level: level, time: new Date()});
    let encrypted = cipher.update(toEncrypt, 'utf8', 'base64');
    encrypted += cipher.final('base64');
    encrypted += "_"+iv;

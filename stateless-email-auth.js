@@ -10,7 +10,7 @@ module.exports = {
    checkJWT: auth.verifyJWT,
    mw: {
       checkJWT: mw.checkJWT,
-      checkToken, mw.checkToken,
+      checkToken: mw.checkToken,
    }
 };
 
@@ -21,6 +21,7 @@ module.exports = {
 function config(options){
    var authconfig = auth.config(options);
    var mailconfig = authmail.config(options);
+   var mwconfig = mw.config(options);
 
-   return authconfig && mailconfig;
+   return authconfig && mailconfig && mwconfig;
 }

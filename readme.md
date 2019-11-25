@@ -1,6 +1,7 @@
 # stateless-email-auth
 
-Stateless, passwordless email authentication in nodejs. Optionally uses json web tokens for stateless persistence.
+Stateless, passwordless email authentication in nodejs. Optionally uses json web tokens for stateless persistence. 
+Designed to provide maximum security with minimal configuration.
 
 ## Installation
 
@@ -25,10 +26,12 @@ npm install stateless-email-auth
 const auth = require('stateless-email-auth');
 
 auth.config({
-   mailServer: null,  //required
-   mailUser: null,  //required
-   mailPassword: null,  //required
-   tokenUrl: null,  //required, url to insert into email with generated token
+   mailServer: 'mailserver.mail.com',  //required
+   mailUser: 'user@mail.com',  //required
+   mailPassword: 'jenny8675309password',  //required
+   tokenUrl: 'http://localhost:3000/auth',  //required, url to insert into email with generated token
+   successPage: "http://localhost:3000/success", //required, url to redirect successful authentication
+	failPage: "http://localhost:3000/fail", //required, url yo redirect failed authentication
    cryptoKey: "crypt00_key", //required, will throw an error if you leave default key,
    mailServerPort: 587, //optional, defaults to 587
    mailServerSecurity: false, //optional, defaults to false
@@ -43,7 +46,8 @@ auth.config({
 ```javascript
 auth.sendToken('user@email.com');
 
-//will send an authentication email with an encrypted authorization token link, provided the mail server options were properly configured
+// will send an authentication email with an encrypted authorization token link
+// the mail server options must be properly configured
 ```
 
 ### Check an authentication token

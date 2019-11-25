@@ -5,6 +5,7 @@ const auth = require('./auth.js');
 module.exports = {config, sendToken};
 
 const configuration = {
+   users: null,
    mailServerPort: 587,
    mailServer: null,
    mailServerSecurity: false,
@@ -39,6 +40,27 @@ function checkConfig(){
 }
 
 /**
+ * checks authorized user list for the given email
+ * if found, returns auth level, otherwise returns false
+ * @param {string} email 
+ */
+function checkUser(email){
+   email = uniformEmail(email);
+   for(i of configuration.users)
+      if(uniformEmail(i.email)===email) 
+         return i.level;
+   return false;
+}
+
+/**
+ * returns given email address converted to lower case and stripped of periods and spaces
+ * @param {string} email 
+ */
+function uniformEmail(email){
+   return email.toLowerCase().replace(/[\s\.]/g,'');
+}
+
+/**
  * sends an email (that has already been verified as a valid user) with
  * an encrypted token
  * @param {string} email 
@@ -46,7 +68,12 @@ function checkConfig(){
 async function sendToken(email){
    if(!checkConfig())
       return Promise.reject("Email configuration incomplete");
-   var token = auth.generateToken(email, config.minutes);
+   
+   var level = checkUser(email);
+   if(!level)
+      return Promise.reject("Invalid user: "+email);
+
+   var token = auth.generateToken(email, level);
    if(token)
       return sendMail(email, token); 
    else
@@ -77,8 +104,8 @@ async function sendMail(recipients, token){
       subject: configuration.mailSubject, // Subject line
       html: htmlBody(token), // html body
       text: textBody(token) // plain text body
-  }).catch(console.log);
-  return Promise.resolve(result);
+   }).catch(console.log);
+   return Promise.resolve(result);
 }
 
 const buttonstyle = "background-color: #0066ff;border:1px solid #0066ff;border-radius:3px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:16px;line-height:44px;text-align:center;text-decoration:none;width:150px;-webkit-text-size-adjust:none;mso-hide:all;"
@@ -88,7 +115,7 @@ function htmlBody(token){
       <div style="margin: 20px;">
          <p>Use the link below to log in.</p>
          <p>
-            <a style="${buttonstyle}" href = "${configuration.tokenUrl+token}">
+            <a style="${buttonstyle}" href = "${configuration.tokenUrl+encodeURIComponent(token)}">
                Login
             </a>
          </p>
