@@ -41,7 +41,7 @@ function checkConfig(){
  * @param {function} next 
  */
 function checkJWT(req, res, next){
-   console.log(req.cookies)
+
    if(!req.cookies.jwt){
       res.sendStatus(401);
       return;

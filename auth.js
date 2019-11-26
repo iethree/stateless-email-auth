@@ -57,7 +57,7 @@ function checkToken(token, minutes=5){
    var decrypted = decryptToken(token);
    
    if(decrypted && withinMinutes(decrypted.time, minutes))
-      return decrypted.email;
+      return {email: decrypted.email, level: decrypted.level};
    else
       return false;
 }
