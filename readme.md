@@ -26,12 +26,16 @@ npm install stateless-email-auth
 const auth = require('stateless-email-auth');
 
 auth.config({
+   users: [//array of authorized users
+      {email:'user1@gmail.com', level: 'admin'}, 
+      {email: 'user2@gmail.com', level: 'user'}
+   ], 
    mailServer: 'mailserver.mail.com',  //required
    mailUser: 'user@mail.com',  //required
    mailPassword: 'jenny8675309password',  //required
-   tokenUrl: 'http://localhost:3000/auth',  //required, url to insert into email with generated token
-   successPage: "http://localhost:3000/success", //required, url to redirect successful authentication
-	failPage: "http://localhost:3000/fail", //required, url yo redirect failed authentication
+   tokenUrl: 'http://localhost:3000/auth',  //required, full url to insert into email with generated token
+   successPage: "/success", //required, path to redirect successful authentication
+	failPage: "/fail", //required, path to redirect failed authentication
    cryptoKey: "crypt00_key", //required, will throw an error if you leave default key,
    mailServerPort: 587, //optional, defaults to 587
    mailServerSecurity: false, //optional, defaults to false
