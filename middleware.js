@@ -43,7 +43,7 @@ function checkConfig(){
 function checkJWT(req, res, next){
 
    if(!req.cookies.jwt){
-      res.sendStatus(401);
+      res.redirect(configuration.failPage).status(401);
       return;
    }
 
@@ -53,7 +53,7 @@ function checkJWT(req, res, next){
       req.level = r.level;
       next();
    })
-   .catch(e=>res.sendStatus(401));
+   .catch(e=>res.redirect(configuration.failPage).status(401));
 }
 
 /**

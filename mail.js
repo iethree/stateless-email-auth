@@ -48,7 +48,7 @@ function checkUser(email){
    email = uniformEmail(email);
    for(i of configuration.users)
       if(uniformEmail(i.email)===email) 
-         return i.level;
+         return i.level || 'user';
    return false;
 }
 
