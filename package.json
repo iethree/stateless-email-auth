@@ -2,7 +2,7 @@
   "name": "stateless-email-auth",
   "version": "0.1.0",
   "description": "stateless email authorization authentication for nodejs web applications",
-  "main": "auth.js",
+  "main": "stateless-email-auth.js",
   "scripts": {
     "test": "node ./test/auth.write.test.js && node ./test/auth.test.js"
   },

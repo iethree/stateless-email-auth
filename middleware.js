@@ -43,22 +43,23 @@ function checkConfig(){
 function checkJWT(req, res, next){
 
    if(!req.cookies.jwt){
-      res.redirect(configuration.failPage).status(401);
+      console.log('no cookie');
+      res.status(401).redirect(configuration.failPage);
       return;
    }
 
    auth.verifyJWT(req.cookies.jwt)
    .then(r=>{
+      console.log('then');
       req.user = r.user;
       req.level = r.level;
       next();
    })
-   .catch(e=>res.redirect(configuration.failPage).status(401));
+   .catch(e=>res.status(401).redirect(configuration.failPage));
 }
 
 /**
  * checks verification token in for validity, if valid, calls next()
- * @param {string} token
  * @param {object} req 
  * @param {object} res 
  * @param {function} next 
