@@ -82,15 +82,13 @@ var userinfo = await auth.checkJWT(jwt);
 ### Check Auth Token
 
 ```javascript
-app.use('/authRoute', auth.mw.checkToken);
-
-//token needs to be in the Authorization header
+//sets JWT in cookie if valid
+app.use('/authRoute/:token', auth.mw.checkToken);
 ```
 
 ### Check JWT
 
 ```javascript
+//checks JWT
 app.use('/protectedRoute', auth.mw.checkJWT);
-
-//jwt needs to be in the Authorization header
 ```
