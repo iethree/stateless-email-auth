@@ -2,7 +2,7 @@
 
 const auth = require('./auth.js');
 
-module.exports = {config, checkJWT, checkToken};
+module.exports = {config, checkJWT, checkToken, logout};
 
 const configuration = {
    failPage: null,
@@ -42,7 +42,7 @@ function checkConfig(){
  */
 function checkJWT(req, res, next){
 
-   if(!req.cookies.jwt){
+   if(!req.cookies ||!req.cookies.jwt){
       console.log('no cookie');
       res.status(401).redirect(configuration.failPage);
       return;
@@ -50,7 +50,7 @@ function checkJWT(req, res, next){
 
    auth.verifyJWT(req.cookies.jwt)
    .then(r=>{
-      console.log('then');
+      console.log(r.user, 'authorized as', r.level);
       req.user = r.user;
       req.level = r.level;
       next();
@@ -84,4 +84,10 @@ function checkToken(req, res, next){
       console.log(e);
       res.redirect(configuration.failPage);
    }
+}
+
+//clears JWT cookie and redirects to home page
+function logout(req, res, next){
+   res.clearCookie("jwt");
+   res.redirect("/");
 }

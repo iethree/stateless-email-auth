@@ -143,8 +143,10 @@ function getJWT(email, level="user"){
  *    @rejects on error
  */
 async function verifyJWT(token){
+   console.log('verifying', token);
 	return new Promise((resolve, reject)=>{
       jwt.verify(token, configuration.cryptoKey, (err, result)=>{
+         
          if(err)
             reject(err.message);
          else if(!result) 

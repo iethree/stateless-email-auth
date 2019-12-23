@@ -11,6 +11,7 @@ module.exports = {
    mw: {
       checkJWT: mw.checkJWT,
       checkToken: mw.checkToken,
+      logout: mw.logout
    }
 };
 

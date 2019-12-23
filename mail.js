@@ -11,6 +11,7 @@ const configuration = {
    mailServerSecurity: false,
    mailServerAuthMethod: 'PLAIN',
    mailUser: null,
+   mailSender: null,
    mailPassword: null,
    mailSubject: "Email Verification",
    tokenUrl: null,
@@ -101,12 +102,14 @@ async function sendMail(recipients, token){
    });
 
    let result = await sender.sendMail({
-      from: configuration.mailUser, // sender address
+      from: configuration.mailSender || configuration.mailUser, // sender address
       to: recipients.toString(), // list of recipients
       subject: configuration.mailSubject, // Subject line
       html: htmlBody(token), // html body
       text: textBody(token) // plain text body
-   }).catch(console.log);
+   })
+   .then(console.log)
+   .catch(console.log);
    return Promise.resolve(result);
 }
 

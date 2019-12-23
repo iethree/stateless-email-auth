@@ -27,7 +27,7 @@ const auth = require('stateless-email-auth');
 auth.config({
    users: [//array of authorized users
       {email:'user1@gmail.com', level: 'admin'}, 
-      {email: 'user2@gmail.com', level: 'user'}
+      {email:'user2@gmail.com', level: 'user'}
    ],
    mailServer: 'mailserver.mail.com',  //required
    mailUser: 'user@mail.com',  //required
