@@ -9,6 +9,7 @@ const configuration = {
    mailServerPort: 587,
    mailServer: null,
    mailServerSecurity: false,
+   mailServerAuthMethod: 'PLAIN',
    mailUser: null,
    mailPassword: null,
    mailSubject: "Email Verification",
@@ -95,7 +96,8 @@ async function sendMail(recipients, token){
       auth: {
           user: configuration.mailUser,
           pass: configuration.mailPassword
-      }
+      },
+      authMethod: configuration.mailServerAuthMethod
    });
 
    let result = await sender.sendMail({
