@@ -9,15 +9,15 @@ Designed to provide maximum security with minimal configuration.
 npm install stateless-email-auth
 ```
 
-## Authorization Flow
+## Successful Authorization Flow
 
 - check if a user's email is on an authorization list
 - email that user an encrypted token in an email link
 - user clicks the link, which puts the token in a get request
 - website checks the token, if valid, issues a JWT and stores in a cookie
-- redirects to defined authentication success or failure pages
+- redirects to defined authentication success page
 
-## Usage
+## Basic Usage
 
 ### Configuration
 
@@ -25,12 +25,14 @@ npm install stateless-email-auth
 const auth = require('stateless-email-auth');
 
 auth.config({
-   users: [//array of authorized users
+   users: [//array of authorized users for a static list, required unless checkUser is defined
       {email:'user1@gmail.com', level: 'admin'}, 
       {email:'user2@gmail.com', level: 'user'}
    ],
+   checkUser: database.findEmail, //optional user-defined function to check email validity
    mailServer: 'mailserver.mail.com',  //required
    mailUser: 'user@mail.com',  //required
+   mailSender: 'sendername@mail.com', //optional, defaults to mailUser
    mailPassword: 'jenny8675309password',  //required
    tokenUrl: 'http://localhost:3000/auth',  //required, full url to insert into email with generated token
    successPage: "/success", //required, path to redirect successful authentication
@@ -39,7 +41,7 @@ auth.config({
    mailServerPort: 587, //optional, defaults to 587
    mailServerSecurity: false, //optional, defaults to false
    mailSubject: "Email Verification", //optional
-   minutes: 5, //optional, defaults to 5
+   tokenExpiration: 5, //optional, token expiration time in minutes, defaults to 5
    JWTexpiration: '14d', //optional
 });
 ```
@@ -47,48 +49,62 @@ auth.config({
 ### Send an authentication email
 
 ```javascript
+// will send an authentication email with an encrypted authorization token link if the email is valid
 auth.sendToken('user@email.com');
-
-// will send an authentication email with an encrypted authorization token link
-// the mail server options must be properly configured
 ```
 
-### Check an authentication token
-
-```javascript
-var user = auth.checkToken(token);
-
-// user will be the email to which token was issued
-```
-
-### Issue a json web token
-
-```javascript
-var jwt = auth.getJWT('user@email.com', 'admin');
-
-//second argument (auth level) is optional, defaults to 'user'
-```
-
-### Check a json web token
-
-```javascript
-var userinfo = await auth.checkJWT(jwt);
-
-//returns email and authorization level stored in JWT
-```
-
-## Express Middleware
-
-### Check Auth Token
+### Express Middleware to Check Auth Token
 
 ```javascript
 //sets JWT in cookie if valid
 app.use('/authRoute/:token', auth.mw.checkToken);
 ```
 
-### Check JWT
+### Express Middleware to Check JWT
 
 ```javascript
 //checks JWT
 app.use('/protectedRoute', auth.mw.checkJWT);
+```
+
+## API
+
+### Check an authentication token
+
+```javascript
+// user will be the email to which token was issued
+var user = auth.checkToken(token);
+```
+
+### Issue a json web token
+
+```javascript
+//second argument (auth level) is optional, defaults to 'user'
+var jwt = auth.getJWT('user@email.com', 'admin');
+```
+
+### Check a json web token
+
+```javascript
+//returns email and authorization level stored in JWT
+var userinfo = await auth.checkJWT(jwt);
+```
+
+### User-defined email checker
+
+```javascript
+//this is a sample to adapt to your database schema
+
+// must return or resolve an authorization level of some sort if valid
+// must return or resolve false if invalid
+
+function checkEmail(email){
+   return new Promise(async (resolve,reject)=>{
+      var user = await db.find({userEmail: email});
+      if(user)
+         resolve(user.authLevel);
+      else
+         resolve(false);
+   });
+}
 ```

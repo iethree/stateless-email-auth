@@ -6,6 +6,7 @@ module.exports = {config, sendToken};
 
 const configuration = {
    users: null,
+   checkUser: checkUser, //function to check user validity
    mailServerPort: 587,
    mailServer: null,
    mailServerSecurity: false,
@@ -15,7 +16,7 @@ const configuration = {
    mailPassword: null,
    mailSubject: "Email Verification",
    tokenUrl: null,
-   minutes: 5,
+   tokenExpiration: 5,
 };
 
 /**
@@ -35,6 +36,9 @@ function config(options){
  * checks to verify whether all necessary email configuration settings have been set
  */
 function checkConfig(){
+   //if there is a user-defined checkuser function, set userlist to empty array
+   if (configuration.checkUser !== checkUser) configuration.users = [];
+
    for(let i in configuration)
       if(configuration[i]==null)
          return false;
@@ -63,15 +67,16 @@ function uniformEmail(email){
 }
 
 /**
- * sends an email (that has already been verified as a valid user) with
- * an encrypted token
+ * checks whether email is authorized and either emails an auth token
+ * or rejects the promise
  * @param {string} email 
  */
 async function sendToken(email){
    if(!checkConfig())
       return Promise.reject("Email configuration incomplete");
    
-   var level = checkUser(email);
+   var level = await configuration.checkUser(email);
+
    if(!level)
       return Promise.reject("Invalid user: "+email);
 
@@ -79,7 +84,7 @@ async function sendToken(email){
    if(token)
       return sendMail(email, token); 
    else
-      Promise.reject("Token generation failed");
+      return Promise.reject("Token generation failed");
 }
 
 /**
@@ -108,7 +113,6 @@ async function sendMail(recipients, token){
       html: htmlBody(token), // html body
       text: textBody(token) // plain text body
    })
-   .then(console.log)
    .catch(console.log);
    return Promise.resolve(result);
 }
@@ -124,12 +128,12 @@ function htmlBody(token){
                Login
             </a>
          </p>
-         <p>(expires in ${configuration.minutes} minutes)</p>
+         <p>(expires in ${configuration.tokenExpiration} minutes)</p>
    </div>
    `;
 }
 
 function textBody(token){
-   return ("Use this link to log in: "+configuration.tokenUrl+token+" (expires in "+configuration.minutes+ " minutes)");
+   return ("Use this link to log in: "+configuration.tokenUrl+token+" (expires in "+configuration.tokenExpiration+ " minutes)");
 }
 
