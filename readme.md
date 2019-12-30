@@ -63,7 +63,7 @@ app.use('/authRoute/:token', auth.mw.checkToken);
 ### Express Middleware to Check JWT
 
 ```javascript
-//checks JWT
+//checks JWT and sets req.user to the email and req.level to the user's auth level
 app.use('/protectedRoute', auth.mw.checkJWT);
 ```
 
