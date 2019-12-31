@@ -18,9 +18,6 @@
     "type": "git",
     "url": "git+https://github.com/iethree/stateless-email-auth.git"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "devDependencies": {
     "logchalk": "^1.0.1"
   }
