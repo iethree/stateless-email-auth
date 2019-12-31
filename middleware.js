@@ -1,13 +1,16 @@
 //express middleware
 
 const auth = require('./auth.js');
+const moment = require('moment');
+
 
 module.exports = {config, checkJWT, checkToken, logout};
 
 const configuration = {
    failPage: null,
    successPage: null,
-   minutes: 5
+   minutes: 5,
+   JWTexpiration: '14d'
 };
 
 /**
@@ -72,6 +75,7 @@ function checkToken(req, res, next){
 
          let options = {
             httpOnly: true, // The cookie only accessible by the web server
+            maxAge: 3600000*24*365
          };
          res.cookie('jwt', jwt, options);
          res.redirect(configuration.successPage);

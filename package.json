@@ -11,13 +11,16 @@
   "dependencies": {
     "date-fns": "^2.6.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
     "nodemailer": "^6.3.1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/iethree/stateless-email-auth.git"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "devDependencies": {
     "logchalk": "^1.0.1"
   }

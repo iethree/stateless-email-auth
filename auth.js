@@ -145,13 +145,14 @@ function getJWT(email, level="user"){
 async function verifyJWT(token){
 	return new Promise((resolve, reject)=>{
       jwt.verify(token, configuration.cryptoKey, (err, result)=>{
+         console.log(result);
          
          if(err)
             reject(err.message);
          else if(!result) 
             reject("jwt error")
          else
-            resolve({user: result.user, level: result.level});
+            resolve({user: result.user, level: result.level, expiresIn: result.expiresIn});
       }).catch((err)=>reject(err.message));
    });
 }
