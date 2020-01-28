@@ -53,10 +53,11 @@ function test(){
       mailServer: "smtp.mailserver.com",
       mailServerSecurity: true,
       mailUser: "admin@testing.test",
+      mailSender: "admin@testing.test",
       mailPassword: "password-placeholder",
       mailSubject: "Email Verification",
       tokenUrl: "http://localhost:3000/verify/",
-      minutes: 7
+      tokenExpiration: 7
    });
 
    check(t10, true, 'setup mailer');
