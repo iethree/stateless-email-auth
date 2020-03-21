@@ -77,7 +77,7 @@ function withinMinutes(time, min){
    if( expiration >= now && time <= now) //if expiration is after now, and the time is in the past
       return true;
    else{
-      console.log('token too old');
+      console.log('auth token too old');
       return false;
    }
 }
@@ -145,8 +145,6 @@ function getJWT(email, level="user"){
 async function verifyJWT(token){
 	return new Promise((resolve, reject)=>{
       jwt.verify(token, configuration.cryptoKey, (err, result)=>{
-         console.log(result);
-         
          if(err)
             reject(err.message);
          else if(!result) 

@@ -46,14 +46,13 @@ function checkConfig(){
 function checkJWT(req, res, next){
 
    if(!req.cookies ||!req.cookies.jwt){
-      console.log('no cookie');
+      console.log('auth: no cookie');
       res.status(401).redirect(configuration.failPage);
       return;
    }
 
    auth.verifyJWT(req.cookies.jwt)
    .then(r=>{
-      console.log(r.user, 'authorized as', r.level);
       req.user = r.user;
       req.level = r.level;
       next();
@@ -85,7 +84,7 @@ function checkToken(req, res, next){
          res.redirect(configuration.failPage);
    }
    catch(e){
-      console.log(e);
+      console.log("auth error", e);
       res.redirect(configuration.failPage);
    }
 }
