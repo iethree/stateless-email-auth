@@ -1,14 +1,13 @@
-//express middleware
+// express middleware
 
 const auth = require('./auth.js');
-const moment = require('moment');
-
 
 module.exports = {config, checkJWT, checkToken, logout};
 
 const configuration = {
   minutes: 5,
-  JWTexpiration: '14d'
+  JWTexpiration: '14d',
+  successPage: '/',
 };
 
 /**
@@ -52,16 +51,16 @@ function checkJWT(req, res, next){
   }
 
   auth.verifyJWT(req.cookies.jwt)
-  .then(r=>{
-    req.user = r.user;
-    req.level = r.level;
-    next();
-  })
-  .catch(e=> {
-    configuration.failPage
-      ? res.status(401).redirect(configuration.failPage)
-      : res.sendStatus(403);
-  });
+    .then(r=>{
+      req.user = r.user;
+      req.level = r.level;
+      next();
+    })
+    .catch(e=> {
+      configuration.failPage
+        ? res.status(401).redirect(configuration.failPage)
+        : res.sendStatus(403);
+    });
 }
 
 /**
@@ -81,6 +80,8 @@ function checkToken(req, res, next){
         maxAge: 3600000*24*365
       };
       res.cookie('jwt', jwt, options);
+      console.log('auth: token verified for ', result.email);
+      console.log('success page', configuration.successPage);
       configuration.successPage
         ? res.redirect(configuration.successPage)
         : res.sendStatus(200);
