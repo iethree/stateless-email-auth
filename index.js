@@ -1,6 +1,6 @@
-const auth = require('./auth.js');
-const authmail = require('./mail.js');
-const mw = require('./middleware.js');
+const auth = require('./src/auth.js');
+const authmail = require('./src/mail.js');
+const mw = require('./src/middleware.js');
 
 module.exports = {
    config: config,
@@ -17,12 +17,12 @@ module.exports = {
 
 /**
  * set configuration options in both mail and auth modules
- * @param {Object} options 
+ * @param {Object} options
  */
 function config(options){
-   var authconfig = auth.config(options);
-   var mailconfig = authmail.config(options);
-   var mwconfig = mw.config(options);
+   const authconfig = auth.config(options);
+   const mailconfig = authmail.config(options);
+   const mwconfig = mw.config(options);
 
    return authconfig && mailconfig && mwconfig;
 }

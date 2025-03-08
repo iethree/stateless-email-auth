@@ -1,6 +1,7 @@
 //mail.js
 const nm = require('nodemailer');
 const auth = require('./auth.js');
+const { eachMinuteOfInterval } = require('date-fns/fp');
 
 module.exports = {config, sendToken};
 
@@ -20,15 +21,15 @@ const configuration = {
 };
 
 /**
- * sets configuration options: 
+ * sets configuration options:
  * @param {Object} options key value pair options
- * @returns {boolean} true if all required options have been set, false otherwise 
+ * @returns {boolean} true if all required options have been set, false otherwise
  */
 function config(options){
    for(let i in options)
       if (configuration.hasOwnProperty(i))
          configuration[i] = options[i];
-  
+
    return checkConfig();
 }
 
@@ -39,60 +40,63 @@ function checkConfig(){
    //if there is a user-defined checkuser function, set userlist to empty array
    if (configuration.checkUser !== checkUser) configuration.users = [];
 
-   for(let i in configuration)
-      if(configuration[i]==null)
+   for(let i in configuration) {
+      if (configuration[i]==null) {
+         console.log("missing config", i)
          return false;
+      }
+   }
    return true;
 }
 
 /**
  * checks authorized user list for the given email
  * if found, returns auth level, otherwise returns false
- * @param {string} email 
+ * @param {string} email
  */
 function checkUser(email){
    email = uniformEmail(email);
-   for(i of configuration.users)
-      if(uniformEmail(i.email)===email) 
+   for(i of configuration.users.filter(Boolean))
+      if(uniformEmail(i?.email || i )===email)
          return i.level || 'user';
    return false;
 }
 
 /**
  * returns given email address converted to lower case and stripped of periods and spaces
- * @param {string} email 
+ * @param {string} email
  */
-function uniformEmail(email){
-   return email.toLowerCase().replace(/[\s\.]/g,'');
+function uniformEmail(email) {
+   return email.toLowerCase().trim();
 }
 
 /**
  * checks whether email is authorized and either emails an auth token
  * or rejects the promise
- * @param {string} email 
+ * @param {string} email
  */
 async function sendToken(email){
    if(!checkConfig())
       return Promise.reject("Email configuration incomplete");
-   
+
    var level = await configuration.checkUser(email);
 
    if(!level)
       return Promise.reject("Invalid user: "+email);
 
    var token = auth.generateToken(email, level);
-   if(token)
-      return sendMail(email, token); 
+   if (token)
+      return sendMail(email, token);
    else
       return Promise.reject("Token generation failed");
 }
 
 /**
  * sends an email
- * @param {array} recipients 
- * @param {string} subject 
- * @param {string} html 
- * @param {string} text 
+ * @param {array} recipients
+ * @param {string} subject
+ * @param {string} html
+ * @param {string} text
  */
 async function sendMail(recipients, token){
    let sender = nm.createTransport({
